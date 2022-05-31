@@ -1,0 +1,112 @@
+{
+  "name": "hyperlink-middleware",
+  "version": "0.0.0-development",
+  "description": "Modify hyperlinks on the fly with middlewares",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.mjs",
+  "unpkg": "./dist/umd/index.umd.js",
+  "jsdelivr": "./dist/umd/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && npm run build:umd && npm run build:umd:min",
+    "build:esm": "tsc -p tsconfig.build.json --outDir dist/esm",
+    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir dist/cjs",
+    "build:umd": "rollup dist/esm/index.js --format umd --name HyperlinkMiddleware --sourcemap --file dist/umd/index.js",
+    "build:umd:min": "uglifyjs --compress --mangle --source-map --comments -o dist/umd/index.min.js -- dist/umd/index.js",
+    "dev": "npm run dev:esm",
+    "dev:esm": "npm run clean && tsc -p tsconfig.build.json --outDir dist/esm --watch",
+    "dev:cjs": "npm run clean && tsc -p tsconfig.build.json --module commonjs --outDir dist/cjs --watch",
+    "clean": "rm -rf ./dist/",
+    "cm": "cz",
+    "coverage": "codecov",
+    "generate-docs": "typedoc",
+    "lint": "eslint ./src/ --fix",
+    "prepare": "husky install",
+    "semantic-release": "semantic-release",
+    "test:watch": "jest --watch",
+    "test": "jest --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sneko/hyperlink-middleware.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Thomas Ramé",
+    "email": "sneko@users.noreply.github.com",
+    "url": "https://github.com/sneko"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "keywords": [
+    "hyperlink",
+    "link",
+    "url",
+    "anchor",
+    "middleware",
+    "transform",
+    "convert",
+    "wrap",
+    "merge",
+    "append",
+    "inject",
+    "watch",
+    "listener",
+    "observer",
+    "utm",
+    "parameters",
+    "analytics",
+    "gtm",
+    "firebase"
+  ],
+  "bugs": {
+    "url": "https://github.com/sneko/hyperlink-middleware/issues"
+  },
+  "homepage": "https://github.com/sneko/hyperlink-middleware#readme",
+  "peerDependencies": {
+    "@babel/runtime": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.0",
+    "@types/node": "^12.20.11",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "codecov": "^3.8.3",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.25.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^6.0.0",
+    "jest": "^27.2.0",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1",
+    "rollup": "^2.72.1",
+    "semantic-release": "^19.0.2",
+    "ts-jest": "^27.0.5",
+    "ts-node": "^10.2.1",
+    "typedoc": "^0.22.15",
+    "typedoc-plugin-markdown": "^3.12.1",
+    "typescript": "^4.2.4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --cache-location .eslintcache --fix"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "dependencies": {}
+}
