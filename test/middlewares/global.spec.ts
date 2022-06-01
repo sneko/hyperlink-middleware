@@ -3,8 +3,9 @@ import {
   Middleware,
   MiddlewareComposition,
 } from '../../src';
-import { SetMissingUrlProtocolMiddleware } from '../../src/middlewares/set-missing-url-protocol';
 import { IgnoreFollowingsMiddleware } from '../../src/middlewares/ignore-followings';
+import { SetMissingUrlProtocolMiddleware } from '../../src/middlewares/set-missing-url-protocol';
+import { SetUtmParametersMiddleware } from '../../src/middlewares/set-utm-parameters';
 
 describe('Middlewares', () => {
   let mdwComposition: MiddlewareComposition;
@@ -94,6 +95,76 @@ describe('Middlewares', () => {
       const properties = mdwComposition.apply(initialProperties);
 
       expect(properties.href).toBe('https://example.com');
+    });
+  });
+
+  describe('SetUtmParametersMiddleware', () => {
+    it('should skip if invalid URL', () => {
+      initialProperties.href = 'pass.com';
+
+      mdwComposition.add(
+        SetUtmParametersMiddleware({
+          params: {
+            utm_source: 'hello',
+          },
+        })
+      );
+
+      const properties = mdwComposition.apply(initialProperties);
+
+      expect(properties.href).toBe('pass.com');
+    });
+
+    it('should add UTM parameters', () => {
+      mdwComposition.add(
+        SetUtmParametersMiddleware({
+          params: {
+            utm_source: 'hello',
+          },
+        })
+      );
+
+      const properties = mdwComposition.apply(initialProperties);
+
+      const url = new URL(properties.href);
+      expect(url.searchParams.get('utm_source')).toBe('hello');
+    });
+
+    it('should not add UTM parameters', () => {
+      initialProperties.href = 'http://pass.com/?utm_source=initial';
+
+      mdwComposition.add(
+        SetUtmParametersMiddleware({
+          params: {
+            utm_source: 'hello',
+          },
+        })
+      );
+
+      const properties = mdwComposition.apply(initialProperties);
+
+      const url = new URL(properties.href);
+      expect(url.searchParams.get('utm_source')).toBe('initial');
+    });
+
+    it('should force adding UTM parameters', () => {
+      initialProperties.href =
+        'http://pass.com/?utm_source=initial&utm_campaign=test';
+
+      mdwComposition.add(
+        SetUtmParametersMiddleware({
+          forceIfPresent: true,
+          params: {
+            utm_source: 'hello',
+          },
+        })
+      );
+
+      const properties = mdwComposition.apply(initialProperties);
+
+      const url = new URL(properties.href);
+      expect(url.searchParams.get('utm_source')).toBe('hello');
+      expect(url.searchParams.get('utm_campaign')).toBeNull();
     });
   });
 });
