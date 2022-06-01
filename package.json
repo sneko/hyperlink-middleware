@@ -110,5 +110,7 @@
       "main"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "urlpattern-polyfill": "^5.0.3"
+  }
 }
