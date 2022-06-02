@@ -1,9 +1,7 @@
 import { Middleware } from '../middleware';
+import { isHyperlinkAllowed, FilterPatterns } from '../wrappers/filter';
 
-export interface IgnoreFollowingsOptions {
-  applyPatterns?: URLPattern[];
-  skipPatterns?: URLPattern[];
-}
+export type IgnoreFollowingsOptions = FilterPatterns;
 
 /** Depending on parameters rules will not call the following chained middlewares */
 export function IgnoreFollowingsMiddleware(
@@ -11,33 +9,16 @@ export function IgnoreFollowingsMiddleware(
 ): Middleware {
   return (properties, element, next) => {
     if (options) {
-      let shouldApply = false;
-
-      if (options.applyPatterns) {
-        for (const pattern of options.applyPatterns) {
-          if (pattern.test(properties.href)) {
-            shouldApply = true;
-            break;
-          }
-        }
+      if (
+        isHyperlinkAllowed(properties.href, {
+          applyPatterns: options.applyPatterns,
+          skipPatterns: options.skipPatterns,
+        })
+      ) {
+        return next();
       } else {
-        shouldApply = true;
+        return;
       }
-
-      if (options.skipPatterns) {
-        for (const pattern of options.skipPatterns) {
-          if (pattern.test(properties.href)) {
-            shouldApply = false;
-            break;
-          }
-        }
-      }
-
-      if (shouldApply) {
-        next();
-      }
-
-      return;
     }
 
     next();
