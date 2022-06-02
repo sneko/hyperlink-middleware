@@ -43,16 +43,28 @@ yarn add hyperlink-middleware
 
 ## Usage
 
-```ts
-import { HyperlinkWatcher, MiddlewareComposition } from 'hyperlink-middleware';
+### In a Node.js environment
 
-// Here it's just fake middlewares, import the ones you want to use or create your own
-import { MyFirstMiddleware, MySecondMiddleware } from './your-own-middlewares';
+Here a basic example with any middleware that you can chain. It's just to give a taste of what's possible :)
+
+```ts
+import {
+  HyperlinkWatcher,
+  MiddlewareComposition,
+  SetUtmParametersMiddleware,
+} from 'hyperlink-middleware';
+
+// Here it's just fake middleware, import the ones you want to use or create your own
+import { MyFirstMiddleware } from './your-own-middlewares';
 
 // Declare which middlewares you want to chain (the composition can be used directly and without any `HyperlinkWatcher` instance if you don't want to watch HTML hyperlinks, you could use for example `const transformedLink = composition.applyToLink('https://example.com')`)
 const composition = new MiddlewareComposition(
   new MyFirstMiddleware(),
-  new MySecondMiddleware()
+  new SetUtmParametersMiddleware({
+    utm_source: 'github',
+    utm_medium: 'referral',
+    utm_campaign: 'my-campagin',
+  })
 );
 
 // To watch all hyperlinks from the HTML, we use the default watcher
@@ -62,25 +74,55 @@ const watcher = new HyperlinkWatcher({
 watcher.watch();
 ```
 
-_More examples are available in [by clicking here](examples/)_
+_More examples are available into [the example folder](examples/) or into [the test folder](examples/) _
+
+### Included directly in the HTML
+
+This case can be if you are just able to append a script to a blog or a CMS, or if you are using Google Tag Manager for example.
+
+```html
+<script src="https://unpkg.com/hyperlink-middleware@1.0.0/dist/umd/index.min.js"></script>
+<script>
+  var composition = HyperlinkMiddleware.MiddlewareComposition(
+    HyperlinkMiddleware.SetUtmParametersMiddleware({
+      utm_source: 'github',
+      utm_medium: 'referral',
+      utm_campaign: 'my-campagin',
+    })
+  );
+
+  var watcher = HyperlinkMiddleware.HyperlinkWatcher({
+    composition: composition,
+  });
+  watcher.watch();
+</script>
+```
 
 ## Available middlewares inside this library
 
-- ...
+- `SetUtmParametersMiddleware(...)`: hyperlinks will be merged with specified UTM parameters. It makes easier tagging all links with parameters that represents your frontend. \*\*It's likely you would use the `FilterWrapper(...)` to wrap this middleware to be sure it's not applied on your own website links or other websites of your company that is watched in the same "analytics account property"
+
+- `SetMissingUrlProtocolMiddleware(...)`: some websites used links starting with `//example.com` so it would probably break following middlewares. This middleware will add a protocol to the links so they do not break following middlewares. It should be used before all other middlewares preferably.
+
+- `IgnoreFollowingsMiddleware(...)`: in case you want to stop the chain based on the input hyperlink. It avoids using multiple `FilterWrapper(...)` with the same rules around all following middlewares
+
+- `FormatFirebaseDynamicLinksMiddleware(...)`: allows generating a Firebase Dynamic Link to keep a consistent flow for cross-browsers sessions. You use use it with `FilterWrapper(...)` because the generation should only apply for specific links that are targeting your native application.
+
+- `FilterWrapper(...)`: it's used to wrap any of the middlewares in this list to specify on which kind of links it should apply or not. It uses the new `URLPattern` standard that offers a lot to easily manage URLs. Example: `FilterWrapper(yourMiddleware, { applyPatterns: [new URLPattern({ hostname: 'example.com' })]})`
 
 _Do not hesitate to share yours so we can add it to the list!_
-
-## Compatibility with custom hyperlinks from frameworks
-
-In case your framework does not use the standard HTML element `<a></a>` it's likely you will have to make the bridge between the framework and this library.
-
-If you do integrate the `MiddlewareComposition` class with a specific framework please do not hesitate to share your work, we may publish it!
 
 ## API & documentation
 
 You can find all available methods and definitions [by clicking here](docs/TYPINGS.md)
 
 _Note: this technical documentation is auto-generated_
+
+## Compatibility with custom hyperlinks from frameworks
+
+In case your framework does not use the standard HTML element `<a></a>` it's likely you will have to make the bridge between the framework and this library.
+
+If you do integrate the `MiddlewareComposition` class with a specific framework please do not hesitate to share your work, we may publish it!
 
 ## Advanced usage
 
