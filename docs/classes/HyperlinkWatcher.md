@@ -43,7 +43,7 @@ Stop watching clicks on DOM hyperlinks (useful to free memory)
 
 #### Defined in
 
-[watcher.ts:68](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L68)
+[watcher.ts:76](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L76)
 
 ___
 
