@@ -50,10 +50,17 @@ describe('HyperlinkWatcher', () => {
     link.target = '_blank';
     link.href = 'https://observer.com';
 
+    // Put the link in nested blocks because the DOM observer will react by block (not per element)
+    const divParent = document.createElement('div');
+    divParent.appendChild(link);
+
+    const divParentParent = document.createElement('div');
+    divParentParent.appendChild(divParent);
+
     hyperlinkWatcher.watch();
     window.open = jest.fn();
 
-    document.body.appendChild(link);
+    document.body.appendChild(divParentParent);
 
     // Wait a bit for the observer to be called asynchronously so it can add the hyperlink listener
     await new Promise(resolve => setTimeout(resolve, 10));

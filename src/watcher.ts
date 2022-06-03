@@ -51,9 +51,17 @@ export class HyperlinkWatcher {
             if (addedNode.nodeType === Node.ELEMENT_NODE) {
               const addedElement = addedNode as Element;
 
+              // If the added node is concerned
               if (addedElement.matches(this.options.selector)) {
                 this.watchElementClick(addedElement);
               }
+
+              // In case the added node has children, we parse all of them because a match can be inside
+              addedElement
+                .querySelectorAll(this.options.selector)
+                .forEach(element => {
+                  this.watchElementClick(element);
+                });
             }
           });
         }
