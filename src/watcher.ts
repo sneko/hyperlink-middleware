@@ -14,7 +14,7 @@ export interface HyperlinkWatcherOptions {
 
 export function getDefaultHyperlinkWatcherOptions(): HyperlinkWatcherOptions {
   return {
-    selector: 'a',
+    selector: 'a:not([data-skip-middlewares])', // By default all links will be watched except those that force disabling the composition (e.g. `<a href="..." data-skip-middlewares></a>`). It may be helpful in case you use on your own the `onclick='...'` event and you do a manual action. You can override it by using the CSS selector syntax.
     composition: new MiddlewareComposition(),
   };
 }
