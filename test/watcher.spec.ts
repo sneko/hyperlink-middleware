@@ -16,6 +16,8 @@ describe('HyperlinkWatcher', () => {
       <div>
         <a id="main-link" href="https://example.com">Hey</a>
         <a class="specific" href="https://specific.com"></a>
+        <a id="skipped-link" data-skip-middlewares href="https://skipped.com"></a>
+        <a class="custom-do-not-use-middlewares" href="https://skipped.com"></a>
       </div>
     `;
 
@@ -115,5 +117,38 @@ describe('HyperlinkWatcher', () => {
       'https://specific.com/#custom',
       '_self'
     );
+  });
+
+  it('should skip hyperlinks tagged with the default data attribute "to skip"', () => {
+    hyperlinkWatcher = new HyperlinkWatcher({
+      composition: mdwComposition,
+    });
+
+    hyperlinkWatcher.watch();
+    window.open = jest.fn();
+
+    const skippedHyperlink = document.querySelector(
+      '#skipped-link'
+    ) as HTMLAnchorElement;
+
+    skippedHyperlink.click();
+    expect(window.open).not.toHaveBeenCalled();
+  });
+
+  it('should skip hyperlinks tagged with the custom selector "to skip"', () => {
+    hyperlinkWatcher = new HyperlinkWatcher({
+      selector: 'a:not(.custom-do-not-use-middlewares)',
+      composition: mdwComposition,
+    });
+
+    hyperlinkWatcher.watch();
+    window.open = jest.fn();
+
+    const skippedHyperlink = document.querySelector(
+      '.custom-do-not-use-middlewares'
+    ) as HTMLAnchorElement;
+
+    skippedHyperlink.click();
+    expect(window.open).not.toHaveBeenCalled();
   });
 });
