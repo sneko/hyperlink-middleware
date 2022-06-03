@@ -27,7 +27,7 @@ Its instance allows you to chain middlewares
 
 #### Defined in
 
-[watcher.ts:27](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L27)
+[watcher.ts:28](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L28)
 
 ## Methods
 
@@ -43,7 +43,7 @@ Stop watching clicks on DOM hyperlinks (useful to free memory)
 
 #### Defined in
 
-[watcher.ts:66](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L66)
+[watcher.ts:68](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L68)
 
 ___
 
@@ -61,4 +61,4 @@ Note: this will watch existing hyperlinks when called, but will also manage new 
 
 #### Defined in
 
-[watcher.ts:35](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L35)
+[watcher.ts:37](https://github.com/sneko/hyperlink-middleware/blob/main/src/watcher.ts#L37)

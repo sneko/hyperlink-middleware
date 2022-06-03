@@ -1,4 +1,4 @@
-import { Middleware } from '../src';
+import { Middleware } from 'hyperlink-middleware';
 
 export interface RandomParameters {
   hello: string;

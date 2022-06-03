@@ -7,3 +7,9 @@ import 'urlpattern-polyfill';
 
 export * from './middleware';
 export * from './watcher';
+
+export * from './middlewares/format-firebase-dynamic-links';
+export * from './middlewares/ignore-followings';
+export * from './middlewares/set-missing-url-protocol';
+export * from './middlewares/set-utm-parameters';
+export * from './wrappers/filter';
