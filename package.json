@@ -14,7 +14,7 @@
     "build": "yarn run clean && yarn run build:esm && yarn run build:cjs && yarn run build:umd && yarn run build:umd:min",
     "build:esm": "tsc -p tsconfig.build.json --outDir dist/esm",
     "build:cjs": "tsc -p tsconfig.build.json --module commonjs --outDir dist/cjs",
-    "build:umd": "rollup dist/esm/index.js --format umd --name HyperlinkMiddleware --sourcemap --file dist/umd/index.js",
+    "build:umd": "rollup -c",
     "build:umd:min": "uglifyjs --compress --mangle --source-map --comments -o dist/umd/index.min.js -- dist/umd/index.js",
     "dev": "yarn run dev:esm",
     "dev:esm": "yarn run clean && tsc -p tsconfig.build.json --outDir dist/esm --watch",
@@ -72,6 +72,8 @@
     "@babel/runtime": "^7.0.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
     "@types/jest": "^27.5.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "^12.20.11",
