@@ -68,8 +68,8 @@ export class HyperlinkWatcher {
       }
     };
 
-    const observer = new MutationObserver(callback);
-    observer.observe(targetNode, config);
+    this.observer = new MutationObserver(callback);
+    this.observer.observe(targetNode, config);
   }
 
   /** Stop watching clicks on DOM hyperlinks (useful to free memory) */
