@@ -14,14 +14,18 @@ describe('HyperlinkWatcher', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <div>
-        <a id="main-link" href="https://example.com"><a>
-        <a class="specific" href="https://specific.com"><a>
+        <a id="main-link" href="https://example.com">Hey</a>
+        <a class="specific" href="https://specific.com"></a>
       </div>
     `;
 
     hyperlinkWatcher = new HyperlinkWatcher({
       composition: mdwComposition,
     });
+  });
+
+  afterEach(() => {
+    hyperlinkWatcher.unwatch();
   });
 
   it('should detect the element link before performing other tests', () => {
