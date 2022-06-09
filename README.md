@@ -61,9 +61,11 @@ import { YourFirstMiddleware } from './your-own-middlewares';
 const composition = new MiddlewareComposition(
   new YourFirstMiddleware(),
   new SetUtmParametersMiddleware({
-    utm_source: 'your-website',
-    utm_medium: 'referral',
-    utm_campaign: 'my-campagin',
+    params: {
+      utm_source: 'your-website',
+      utm_medium: 'referral',
+      utm_campaign: 'my-campaign',
+    },
   })
 );
 
@@ -86,15 +88,17 @@ If you are just able to append a script to a blog or a CMS, or if you are using 
 ```html
 <script src="https://unpkg.com/hyperlink-middleware@latest/dist/umd/index.min.js"></script>
 <script>
-  var composition = HyperlinkMiddleware.MiddlewareComposition(
-    HyperlinkMiddleware.SetUtmParametersMiddleware({
-      utm_source: 'your-website',
-      utm_medium: 'referral',
-      utm_campaign: 'my-campagin',
+  var composition = new HyperlinkMiddleware.MiddlewareComposition(
+    new HyperlinkMiddleware.SetUtmParametersMiddleware({
+      params: {
+        utm_source: 'your-website',
+        utm_medium: 'referral',
+        utm_campaign: 'my-campaign',
+      },
     })
   );
 
-  var watcher = HyperlinkMiddleware.HyperlinkWatcher({
+  var watcher = new HyperlinkMiddleware.HyperlinkWatcher({
     composition: composition,
   });
   watcher.watch();

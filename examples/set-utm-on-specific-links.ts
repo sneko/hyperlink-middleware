@@ -10,7 +10,7 @@ const utmMiddleware = SetUtmParametersMiddleware({
   params: {
     utm_source: 'your-website',
     utm_medium: 'referral',
-    utm_campaign: 'my-campagin',
+    utm_campaign: 'my-campaign',
   },
 });
 
