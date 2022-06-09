@@ -21,6 +21,7 @@ describe('HyperlinkWatcher', () => {
         <a href="https://parent.com">
           <div id="nested-clickable-block"></div>
         </a>
+        <a id="anchor-link" href="#specific-page">Hey</a>
       </div>
     `;
 
@@ -168,5 +169,32 @@ describe('HyperlinkWatcher', () => {
       'https://parent.com/#custom',
       '_self'
     );
+  });
+
+  it('should not handle the hyperlink action if no change with middlewares', () => {
+    const mdw: Middleware = (properties, element, next) => {
+      try {
+        new URL(properties.href);
+      } catch (err) {
+        // In case it's not a valid format the middleware is skipped without affecting next ones
+      }
+
+      next();
+    };
+    const mdwComposition = new MiddlewareComposition(mdw);
+
+    hyperlinkWatcher = new HyperlinkWatcher({
+      composition: mdwComposition,
+    });
+
+    hyperlinkWatcher.watch();
+    window.open = jest.fn();
+
+    const hyperlink = document.querySelector(
+      '#anchor-link'
+    ) as HTMLAnchorElement;
+
+    hyperlink.click();
+    expect(window.open).not.toHaveBeenCalled();
   });
 });

@@ -100,8 +100,6 @@ export class HyperlinkWatcher {
       const triggeredHyperlink = event.currentTarget as Element;
 
       if (triggeredHyperlink.nodeName === 'A') {
-        event.preventDefault();
-
         const hyperlinkElement = triggeredHyperlink as HTMLAnchorElement;
 
         const finalProperties = this.options.composition.apply(
@@ -112,11 +110,19 @@ export class HyperlinkWatcher {
           hyperlinkElement
         );
 
-        // Default to `_self` otherwise when not specified it will be `_blank`
-        const hyperlinkTarget: string =
-          finalProperties.target !== '' ? finalProperties.target : '_self';
+        // We handle on our own the hyperlink action only if there was a change made inside middlewares
+        if (
+          hyperlinkElement.href !== finalProperties.href ||
+          hyperlinkElement.target !== finalProperties.target
+        ) {
+          event.preventDefault();
 
-        window.open(finalProperties.href, hyperlinkTarget);
+          // Default to `_self` otherwise when not specified it will be `_blank`
+          const hyperlinkTarget: string =
+            finalProperties.target !== '' ? finalProperties.target : '_self';
+
+          window.open(finalProperties.href, hyperlinkTarget);
+        }
       }
     }
   };
