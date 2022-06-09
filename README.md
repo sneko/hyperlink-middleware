@@ -150,3 +150,18 @@ _Note: in case your "parent project" uses CommonJS it's required to use `yarn ru
 **[IMPORTANT] To develop, and in case your package manager is `npm` you should be able to install dependencies to do some testing... but to submit a pull request please use `yarn` because our dependency tree is managed through `yarn.lock` (and not `package-lock.json` from `npm`).**
 
 Thanks in advance! 🚀
+
+[build-img]: https://github.com/sneko/hyperlink-middleware/actions/workflows/release.yml/badge.svg
+[build-url]: https://github.com/sneko/hyperlink-middleware/actions/workflows/release.yml
+[downloads-img]: https://img.shields.io/npm/dt/hyperlink-middleware
+[downloads-url]: https://www.npmtrends.com/hyperlink-middleware
+[npm-img]: https://img.shields.io/npm/v/hyperlink-middleware
+[npm-url]: https://www.npmjs.com/package/hyperlink-middleware
+[issues-img]: https://img.shields.io/github/issues/sneko/hyperlink-middleware
+[issues-url]: https://github.com/sneko/hyperlink-middleware/issues
+[codecov-img]: https://codecov.io/gh/sneko/hyperlink-middleware/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/sneko/hyperlink-middleware
+[semantic-release-img]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
+[semantic-release-url]: https://github.com/semantic-release/semantic-release
+[commitizen-img]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
+[commitizen-url]: http://commitizen.github.io/cz-cli/
