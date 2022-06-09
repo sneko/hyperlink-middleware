@@ -95,13 +95,14 @@ export class HyperlinkWatcher {
    */
   protected elementClicked = (event: Event): void => {
     // Only act if the underlying corresponds to a valid selector we know how to manage
-    if (event.target) {
-      event.preventDefault();
+    // Note: we use `currentTarget` because it will always represent the hyperlink, whereas `target` can be the nested element being clicked (in the hyperlink content)
+    if (event.currentTarget) {
+      const triggeredHyperlink = event.currentTarget as Element;
 
-      const clickedElement = event.target as Element;
+      if (triggeredHyperlink.nodeName === 'A') {
+        event.preventDefault();
 
-      if (clickedElement.nodeName === 'A') {
-        const hyperlinkElement = clickedElement as HTMLAnchorElement;
+        const hyperlinkElement = triggeredHyperlink as HTMLAnchorElement;
 
         const finalProperties = this.options.composition.apply(
           {

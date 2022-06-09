@@ -18,6 +18,9 @@ describe('HyperlinkWatcher', () => {
         <a class="specific" href="https://specific.com"></a>
         <a id="skipped-link" data-skip-middlewares href="https://skipped.com"></a>
         <a class="custom-do-not-use-middlewares" href="https://skipped.com"></a>
+        <a href="https://parent.com">
+          <div id="nested-clickable-block"></div>
+        </a>
       </div>
     `;
 
@@ -150,5 +153,20 @@ describe('HyperlinkWatcher', () => {
 
     skippedHyperlink.click();
     expect(window.open).not.toHaveBeenCalled();
+  });
+
+  it('should manage the hyperlink even if the clicked element is nested', () => {
+    hyperlinkWatcher.watch();
+    window.open = jest.fn();
+
+    const nestedElement = document.querySelector(
+      '#nested-clickable-block'
+    ) as HTMLAnchorElement;
+
+    nestedElement.click();
+    expect(window.open).toHaveBeenLastCalledWith(
+      'https://parent.com/#custom',
+      '_self'
+    );
   });
 });
