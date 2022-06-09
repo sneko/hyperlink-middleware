@@ -89,7 +89,7 @@ If you are just able to append a script to a blog or a CMS, or if you are using 
 <script src="https://unpkg.com/hyperlink-middleware@latest/dist/umd/index.min.js"></script>
 <script>
   var composition = new HyperlinkMiddleware.MiddlewareComposition(
-    new HyperlinkMiddleware.SetUtmParametersMiddleware({
+    HyperlinkMiddleware.SetUtmParametersMiddleware({
       params: {
         utm_source: 'your-website',
         utm_medium: 'referral',
