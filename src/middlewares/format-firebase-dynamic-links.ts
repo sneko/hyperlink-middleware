@@ -63,92 +63,92 @@ export function FormatFirebaseDynamicLinksMiddleware(
   options: FormatFirebaseDynamicLinksOptions
 ): Middleware {
   return (properties, element, next) => {
+    let url: URL;
     try {
-      const url = new URL(properties.href);
-      let androidStoreUrl: URL | undefined;
-      let iosStoreUrl: URL | undefined;
-
-      const dynamicLink = new URL(options.dynamicLinkBase);
-      dynamicLink.searchParams.set('link', properties.href);
-
-      if (options.android) {
-        dynamicLink.searchParams.set('apn', options.android.storeId);
-
-        if (options.android.storeLink) {
-          androidStoreUrl = new URL(options.android.storeLink);
-        }
-      }
-
-      if (options.ios) {
-        dynamicLink.searchParams.set('isi', options.ios.storeId);
-        dynamicLink.searchParams.set('ibi', options.ios.bundleId);
-
-        if (options.ios.storeLink) {
-          iosStoreUrl = new URL(options.ios.storeLink);
-        }
-
-        if (options.ios.nativeScheme) {
-          dynamicLink.searchParams.set('ius', options.ios.nativeScheme);
-        }
-
-        dynamicLink.searchParams.set(
-          'efr',
-          options.ios.skipAppPreviewPage || '1'
-        );
-      }
-
-      if (
-        options.injectUtmParamsInDynamicLink ||
-        options.injectUtmParamsInFallback
-      ) {
-        const urlParams = url.searchParams;
-
-        // Get UTM parameters from the original link
-        Object.values(FirebaseUtmParamEnum).forEach(utmKey => {
-          const utmValue = urlParams.get(utmKey);
-
-          if (utmValue) {
-            if (options.injectUtmParamsInDynamicLink) {
-              dynamicLink.searchParams.set(utmKey, utmValue);
-            }
-
-            if (options.injectUtmParamsInFallback) {
-              if (androidStoreUrl) {
-                androidStoreUrl.searchParams.set(utmKey, utmValue);
-              }
-
-              if (iosStoreUrl) {
-                iosStoreUrl.searchParams.set(utmKey, utmValue);
-              }
-            }
-          }
-        });
-      }
-
-      // Fallback link (after UTM manipulations because they can be affected)
-      if (options.usePlatformLinkAsFallback !== false) {
-        if ((platform as any).os.family === 'iOS' && iosStoreUrl) {
-          dynamicLink.searchParams.set('ofl', iosStoreUrl.toString());
-        } else if (
-          (platform as any).os.family === 'Android' &&
-          androidStoreUrl
-        ) {
-          dynamicLink.searchParams.set('ofl', androidStoreUrl.toString());
-        }
-      }
-
-      if (options.overrideParams) {
-        for (const [paramKey, paramValue] of Object.entries(
-          options.overrideParams
-        )) {
-          dynamicLink.searchParams.set(paramKey, paramValue);
-        }
-      }
-
-      properties.href = dynamicLink.toString();
+      url = new URL(properties.href);
     } catch (err) {
       // In case it's not a valid format the middleware is skipped without affecting next ones
+      return next();
     }
+
+    let androidStoreUrl: URL | undefined;
+    let iosStoreUrl: URL | undefined;
+
+    const dynamicLink = new URL(options.dynamicLinkBase);
+    dynamicLink.searchParams.set('link', properties.href);
+
+    if (options.android) {
+      dynamicLink.searchParams.set('apn', options.android.storeId);
+
+      if (options.android.storeLink) {
+        androidStoreUrl = new URL(options.android.storeLink);
+      }
+    }
+
+    if (options.ios) {
+      dynamicLink.searchParams.set('isi', options.ios.storeId);
+      dynamicLink.searchParams.set('ibi', options.ios.bundleId);
+
+      if (options.ios.storeLink) {
+        iosStoreUrl = new URL(options.ios.storeLink);
+      }
+
+      if (options.ios.nativeScheme) {
+        dynamicLink.searchParams.set('ius', options.ios.nativeScheme);
+      }
+
+      dynamicLink.searchParams.set(
+        'efr',
+        options.ios.skipAppPreviewPage || '1'
+      );
+    }
+
+    if (
+      options.injectUtmParamsInDynamicLink ||
+      options.injectUtmParamsInFallback
+    ) {
+      const urlParams = url.searchParams;
+
+      // Get UTM parameters from the original link
+      Object.values(FirebaseUtmParamEnum).forEach(utmKey => {
+        const utmValue = urlParams.get(utmKey);
+
+        if (utmValue) {
+          if (options.injectUtmParamsInDynamicLink) {
+            dynamicLink.searchParams.set(utmKey, utmValue);
+          }
+
+          if (options.injectUtmParamsInFallback) {
+            if (androidStoreUrl) {
+              androidStoreUrl.searchParams.set(utmKey, utmValue);
+            }
+
+            if (iosStoreUrl) {
+              iosStoreUrl.searchParams.set(utmKey, utmValue);
+            }
+          }
+        }
+      });
+    }
+
+    // Fallback link (after UTM manipulations because they can be affected)
+    if (options.usePlatformLinkAsFallback !== false) {
+      if ((platform as any).os.family === 'iOS' && iosStoreUrl) {
+        dynamicLink.searchParams.set('ofl', iosStoreUrl.toString());
+      } else if ((platform as any).os.family === 'Android' && androidStoreUrl) {
+        dynamicLink.searchParams.set('ofl', androidStoreUrl.toString());
+      }
+    }
+
+    if (options.overrideParams) {
+      for (const [paramKey, paramValue] of Object.entries(
+        options.overrideParams
+      )) {
+        dynamicLink.searchParams.set(paramKey, paramValue);
+      }
+    }
+
+    properties.href = dynamicLink.toString();
 
     next();
   };

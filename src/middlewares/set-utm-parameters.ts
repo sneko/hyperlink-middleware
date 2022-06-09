@@ -39,34 +39,37 @@ export function SetUtmParametersMiddleware(
   options: SetUtmParametersOptions
 ): Middleware {
   return (properties, element, next) => {
+    let url: URL;
     try {
-      const url = new URL(properties.href);
-      const urlParams = url.searchParams;
-      let existingUtmParams: boolean = false;
-
-      Object.values(UtmParamEnum).forEach(utmKey => {
-        if (urlParams.has(utmKey)) {
-          if (
-            options.forceIfPresent !== undefined &&
-            options.forceIfPresent === true
-          ) {
-            urlParams.delete(utmKey);
-          } else {
-            existingUtmParams = true;
-          }
-        }
-      });
-
-      if (!existingUtmParams) {
-        for (const [utmKey, utmValue] of Object.entries(options.params)) {
-          urlParams.set(utmKey, utmValue);
-        }
-      }
-
-      properties.href = url.toString();
+      url = new URL(properties.href);
     } catch (err) {
       // In case it's not a valid format the middleware is skipped without affecting next ones
+      return next();
     }
+
+    const urlParams = url.searchParams;
+    let existingUtmParams: boolean = false;
+
+    Object.values(UtmParamEnum).forEach(utmKey => {
+      if (urlParams.has(utmKey)) {
+        if (
+          options.forceIfPresent !== undefined &&
+          options.forceIfPresent === true
+        ) {
+          urlParams.delete(utmKey);
+        } else {
+          existingUtmParams = true;
+        }
+      }
+    });
+
+    if (!existingUtmParams) {
+      for (const [utmKey, utmValue] of Object.entries(options.params)) {
+        urlParams.set(utmKey, utmValue);
+      }
+    }
+
+    properties.href = url.toString();
 
     next();
   };
