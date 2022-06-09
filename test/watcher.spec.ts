@@ -22,6 +22,7 @@ describe('HyperlinkWatcher', () => {
           <div id="nested-clickable-block"></div>
         </a>
         <a id="anchor-link" href="#specific-page">Hey</a>
+        <a id="new-tab-link" href="https://example.com" target="_blank">Hey</a>
       </div>
     `;
 
@@ -196,5 +197,40 @@ describe('HyperlinkWatcher', () => {
 
     hyperlink.click();
     expect(window.open).not.toHaveBeenCalled();
+  });
+
+  it('should use a workaround when an ad blocker prevents opening a new tab', async () => {
+    hyperlinkWatcher = new HyperlinkWatcher({
+      composition: mdwComposition,
+    });
+
+    hyperlinkWatcher.watch();
+
+    window.open = jest.fn((): Window | null => {
+      return { closed: true } as Window;
+    });
+
+    const newTabHyperlink = document.querySelector(
+      '#new-tab-link'
+    ) as HTMLAnchorElement;
+
+    newTabHyperlink.click();
+
+    // [WORKAROUND] For any reason JSDOM is complaining when using the `setTimeout()` in a click event and logs a lot of errors
+    // that does not break the test, so temporary we silent the `console.error` :) ... sorry about that but I didn't find a way to make it working!
+    // Refs:
+    // - https://github.com/jsdom/jsdom/issues/2112
+    // - https://github.com/facebook/jest/issues/5266
+    const oldConsoleError = console.error;
+    console.error = jest.fn();
+
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    console.error = oldConsoleError;
+
+    expect(window.open).toHaveBeenLastCalledWith(
+      'https://example.com/#custom',
+      '_self'
+    );
   });
 });

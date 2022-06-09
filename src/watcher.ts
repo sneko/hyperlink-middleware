@@ -1,21 +1,25 @@
 import { MiddlewareComposition } from './middleware';
+import { workAroundPopUpBlockers } from './utils/workarounds';
 
 /** Allow customizing the default behavior */
 export interface HyperlinkWatcherInputOptions {
   selector?: string; // Can be used to target specific links with selector rules (e.g. `a[data-example]`, `a.myclass`...)
   composition: MiddlewareComposition;
+  disablePopUpBlockersWorkaround?: boolean; // Disable the workaround of opening links targeting `_blank` when ad blockers block them (see `workAroundPopUpBlockers()` for more notes)
 }
 
 /** Watcher options */
 export interface HyperlinkWatcherOptions {
   selector: string;
   composition: MiddlewareComposition;
+  disablePopUpBlockersWorkaround: boolean;
 }
 
 export function getDefaultHyperlinkWatcherOptions(): HyperlinkWatcherOptions {
   return {
     selector: 'a:not([data-skip-middlewares])', // By default all links will be watched except those that force disabling the composition (e.g. `<a href="..." data-skip-middlewares></a>`). It may be helpful in case you use on your own the `onclick='...'` event and you do a manual action. You can override it by using the CSS selector syntax.
     composition: new MiddlewareComposition(),
+    disablePopUpBlockersWorkaround: false,
   };
 }
 
@@ -121,7 +125,15 @@ export class HyperlinkWatcher {
           const hyperlinkTarget: string =
             finalProperties.target !== '' ? finalProperties.target : '_self';
 
-          window.open(finalProperties.href, hyperlinkTarget);
+          const newWindow = window.open(finalProperties.href, hyperlinkTarget);
+
+          if (
+            newWindow &&
+            hyperlinkTarget === '_blank' &&
+            this.options.disablePopUpBlockersWorkaround !== true
+          ) {
+            workAroundPopUpBlockers(newWindow, finalProperties.href);
+          }
         }
       }
     }
