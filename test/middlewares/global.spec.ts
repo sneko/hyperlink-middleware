@@ -189,7 +189,7 @@ describe('Middlewares', () => {
       const properties = mdwComposition.apply(initialProperties);
 
       expect(properties.href).toBe(
-        'http://example.page.link/?link=https%3A%2F%2Fexample.com'
+        'http://example.page.link/?link=https%3A%2F%2Fexample.com%2F'
       );
     });
 
@@ -210,7 +210,7 @@ describe('Middlewares', () => {
       const properties = mdwComposition.apply(initialProperties);
       const dynamicLink = new URL(properties.href);
 
-      expect(dynamicLink.searchParams.get('link')).toBe('https://example.com');
+      expect(dynamicLink.searchParams.get('link')).toBe('https://example.com/');
       expect(dynamicLink.searchParams.get('apn')).toBe('test_android_1');
       expect(dynamicLink.searchParams.get('ibi')).toBe('test_ios_1');
       expect(dynamicLink.searchParams.get('isi')).toBe('test_ios_2');
@@ -319,6 +319,23 @@ describe('Middlewares', () => {
       const dynamicLink = new URL(properties.href);
 
       expect(dynamicLink.searchParams.get('efr')).toBe('1');
+    });
+
+    it('should correct the input format (to simplify Firebase URL patterns to whitelist)', () => {
+      initialProperties.href = 'https://example.com?param=1';
+
+      mdwComposition.add(
+        FormatFirebaseDynamicLinksMiddleware({
+          dynamicLinkBase: 'http://example.page.link',
+        })
+      );
+
+      const properties = mdwComposition.apply(initialProperties);
+
+      const url = new URL(properties.href);
+      const originalLink = url.searchParams.get('link');
+
+      expect(originalLink).toBe('https://example.com/?param=1');
     });
   });
 });

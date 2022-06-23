@@ -75,7 +75,7 @@ export function FormatFirebaseDynamicLinksMiddleware(
     let iosStoreUrl: URL | undefined;
 
     const dynamicLink = new URL(options.dynamicLinkBase);
-    dynamicLink.searchParams.set('link', properties.href);
+    dynamicLink.searchParams.set('link', url.toString());
 
     if (options.android) {
       dynamicLink.searchParams.set('apn', options.android.storeId);
