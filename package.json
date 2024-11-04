@@ -3,9 +3,9 @@
   "version": "0.0.0-development",
   "description": "Modify hyperlinks on the fly with middlewares",
   "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.mjs",
-  "unpkg": "./dist/umd/index.umd.js",
-  "jsdelivr": "./dist/umd/index.umd.js",
+  "module": "./dist/esm/index.js",
+  "unpkg": "./dist/umd/index.js",
+  "jsdelivr": "./dist/umd/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist/**/*"
