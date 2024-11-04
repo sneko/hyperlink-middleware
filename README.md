@@ -59,8 +59,8 @@ import { YourFirstMiddleware } from './your-own-middlewares';
 
 // Declare which middlewares you want to chain
 const composition = new MiddlewareComposition(
-  new YourFirstMiddleware(),
-  new SetUtmParametersMiddleware({
+  YourFirstMiddleware(),
+  SetUtmParametersMiddleware({
     params: {
       utm_source: 'your-website',
       utm_medium: 'referral',
