@@ -40,8 +40,9 @@
     "email": "sneko@users.noreply.github.com",
     "url": "https://github.com/sneko"
   },
+  "packageManager": "yarn@1.22.22",
   "engines": {
-    "node": "*"
+    "node": ">=16.15.0"
   },
   "keywords": [
     "hyperlink",
